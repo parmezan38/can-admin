@@ -1,0 +1,65 @@
+﻿@inherits CANDatabaseBase
+@using CANAdmin.Shared.Models
+
+    <div class="container card mb-2">
+        <div class="container">
+            <div class="row p-4 mh-100">
+                <div class="text-center col-2 align-self-center">
+                    <strong>@canDatabase.Name</strong>
+                </div>
+                <div class="col-3 align-self-center">
+                    Uploaded On @canDatabase.Date
+                </div>
+                <div class="col-3 align-self-center">
+                    <button @onclick="@(() => { ShowNetworkNodes = !ShowNetworkNodes; })" class="btn btn-primary">
+                        @if (ShowNetworkNodes)
+                        {
+                            <span>Hide Network Nodes</span>
+                        }
+                        else
+                        {
+                            <span>Show Network Nodes (@canDatabase.NetworkNodes.Count)</span>
+                        }
+                    </button>
+                </div>
+                <div class="col-3 align-self-center">
+                    <button @onclick="@(() => { ShowMessages = !ShowMessages; })" class="btn btn-primary">
+                        @if (ShowMessages)
+                        {
+                            <span>Hide Messages</span>
+                        }
+                        else
+                        {
+                            <span>Show Messages (@canDatabase.Messages.Count)</span>
+                        }
+                    </button>
+                </div>
+                <div class="col-1 align-self-center">
+                    <button @onclick="@DeleteWarning" class="btn btn-primary">delete</button>
+                </div>
+            </div>
+        </div>
+        @if (ShowNetworkNodes)
+        {
+            <hr />
+            <div class="container ml-5">
+                <span>
+                    <strong>Network Nodes</strong>
+                    @foreach (NetworkNodeView node in canDatabase.NetworkNodes)
+                    {
+                        <span>@node.Name</span>
+                    }
+                </span>
+            </div>
+        }
+        @if (ShowMessages)
+        {
+            <hr />
+            <div class="container ml-5">
+                @foreach (MessageView message in canDatabase.Messages)
+                {
+                    <Message message="message"></Message>
+                }
+            </div>
+        }
+    </div>

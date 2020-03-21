@@ -1,0 +1,16 @@
+﻿@inherits CANDatabaseListBase
+@using CANAdmin.Shared.Models
+
+@if (CANDatabases == null)
+{
+    <p><em>Loading CAN Databases...</em></p>
+}
+else
+{
+    <div class="container">
+        @foreach (CANDatabaseView canDatabase in CANDatabases)
+        {
+            <CANDatabase canDatabase="canDatabase" DeleteWarningEventCallback="@DeleteWarning"></CANDatabase>
+        }
+    </div>
+}

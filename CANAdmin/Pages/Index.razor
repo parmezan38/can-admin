@@ -1,0 +1,8 @@
+﻿@page "/"
+@inherits IndexBase
+
+<DbcFileUpload RefreshEventCallback="@RefreshCANDatabases"/>
+
+<WarningDialog @ref="WarningDialogComponent" DeleteEventCallback="@Delete"/>
+
+<CANDatabaseList @ref="CANDatabaseListComponent" DeleteWarningEventCallback="@DeleteWarning"/>

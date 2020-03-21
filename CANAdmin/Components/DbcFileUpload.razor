@@ -1,0 +1,21 @@
+﻿@inherits DbcFileUploadBase
+@using BlazorInputFile
+
+<div class="container">
+    <div class="input-group mb-3">
+        <div class="custom-file">
+            @if (DoubleBuffer)
+            {
+                <InputFile OnChange="GetFile" class="custom-file-input" id="inputGroupFile" />
+            }
+            else
+            {
+                <InputFile OnChange="GetFile" class="custom-file-input" id="inputGroupFile" />
+            }
+            <label class="custom-file-label" for="inputGroupFile">Choose file</label>
+        </div>
+        <div class="input-group-append">
+            <button @onclick="UploadFile" class="btn btn-outline-secondary" type="button">Upload</button>
+        </div>
+    </div>
+</div>

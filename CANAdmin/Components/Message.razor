@@ -1,0 +1,49 @@
+﻿@inherits MessageBase
+@using CANAdmin.Shared.Models
+
+    <div class="container">
+        <div class="row p-1 mh-50">
+            <div class="col-2 align-self-center">
+                @message.MessageId
+            </div>
+            <div class="col-5 align-self-center">
+                @message.Name
+            </div>
+            <div class="col-3 align-self-center">
+                <button @onclick="@(() => { ShowSignals = !ShowSignals; })" class="btn btn-primary">
+                    @if (ShowSignals)
+                    {
+                        <span>Hide Signals</span>
+                    }
+                    else
+                    {
+                        <span>Show Signals (@message.Signals.Count)</span>
+                    }
+                </button>
+            </div>
+        </div>
+        @if (ShowSignals)
+        {
+            <hr />
+            <div class="mt-3 ml-5">
+                @foreach (SignalView signal in message.Signals)
+                {
+                    <div class="container">
+                        <div class="row p-1 mh-50">
+                            <div class="col-5">
+                                @signal.Name
+                            </div>
+                            <div class="col-2">
+                                Start Bit @signal.StartBit
+                            </div>
+                            <div class="col-2">
+                                Length @signal.Length
+                            </div>
+                        </div>
+                    </div>
+                    <hr />
+                }
+            </div>
+        }
+    </div>
+<hr/>
