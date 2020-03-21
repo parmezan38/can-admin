@@ -6,16 +6,25 @@
         <div class="custom-file">
             @if (DoubleBuffer)
             {
-                <InputFile OnChange="GetFile" class="custom-file-input" id="inputGroupFile" />
+                <InputFile OnChange="GetFile" type="file" class="custom-file-input" id="inputGroupFile" aria-describedby="inputGroupFileAddon"/>
             }
             else
             {
-                <InputFile OnChange="GetFile" class="custom-file-input" id="inputGroupFile" />
+                <InputFile OnChange="GetFile" type="file" class="custom-file-input" id="inputGroupFile" aria-describedby="inputGroupFileAddon"/>
             }
-            <label class="custom-file-label" for="inputGroupFile">Choose file</label>
+            <label class="custom-file-label" for="inputGroupFile">
+                @if (Label != null)
+                {
+                    @Label
+                }
+                else
+                {
+                    <span>Choose file</span>
+                }
+            </label>
         </div>
         <div class="input-group-append">
-            <button @onclick="UploadFile" class="btn btn-outline-secondary" type="button">Upload</button>
+            <button @onclick="UploadFile" class="btn btn-outline-secondary" type="button" id="inputGroupFileAddon">Upload</button>
         </div>
     </div>
 </div>
