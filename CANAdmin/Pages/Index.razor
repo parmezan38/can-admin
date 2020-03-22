@@ -1,15 +1,15 @@
 ﻿@page "/"
 @inherits IndexBase
 
-@if (statusMessage?.Message != null && statusMessage?.Status != null)
+@if (statusMessage != null)
 {
     <div class="alert alert-@statusMessage.Status" role="alert">
         @statusMessage.Message
     </div>
 }
 
-<DbcFileUpload RefreshEventCallback="@RefreshCANDatabases" StatusMessageEventCallback="@SetStatusMessage"/>
+<DbcFileUpload />
 
 <WarningDialog @ref="WarningDialogComponent" DeleteEventCallback="@Delete" />
 
-<CANDatabaseList @ref="CANDatabaseListComponent" DeleteWarningEventCallback="@DeleteWarning"/>
+<CANDatabaseList @ref="CANDatabaseListComponent" DeleteWarningEventCallback="@DeleteWarning" />

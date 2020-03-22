@@ -12,6 +12,8 @@ using CANAdmin.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Design;
 using CANAdmin.Shared.Tools;
+using CANAdmin.Api.Hubs;
+using CANAdmin.Api.Services;
 
 namespace CANAdmin.Api
 {
@@ -44,6 +46,8 @@ namespace CANAdmin.Api
                 });
             });
             services.AddControllers().AddNewtonsoftJson();
+            services.AddSingleton<IEventMessageService, EventMessageService>();
+            services.AddSignalR();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -60,6 +64,7 @@ namespace CANAdmin.Api
 
             app.UseEndpoints(endpoints =>
             {
+                endpoints.MapHub<SignalHub>("/SignalHub");
                 endpoints.MapControllers();
             });
         }

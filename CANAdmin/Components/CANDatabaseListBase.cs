@@ -22,7 +22,6 @@ namespace CANAdmin.Components
         public async Task DeleteWarning(CANDatabaseView canDatabase)
         {
             await DeleteWarningEventCallback.InvokeAsync(canDatabase);
-            await RefreshCANDatabases();
         }
 
         public async Task RefreshCANDatabases()

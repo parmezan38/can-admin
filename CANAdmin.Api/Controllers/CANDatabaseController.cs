@@ -8,6 +8,9 @@ using System.Linq;
 using System;
 using Microsoft.Extensions.Hosting;
 using System.Threading.Tasks;
+using CANAdmin.Api.Hubs;
+using Microsoft.AspNetCore.SignalR;
+using CANAdmin.Api.Services;
 
 namespace CANAdmin.Api.Controllers
 {
@@ -16,11 +19,15 @@ namespace CANAdmin.Api.Controllers
     public class CANDatabaseController : Controller
     {
         private readonly ICANDatabaseManager _CANDatabaseManager;
+        public readonly IHubContext<SignalHub> _signalHub;
+        private readonly IEventMessageService _eventMessageService;
         private string _fileLocation;
 
-        public CANDatabaseController(ICANDatabaseManager CANDatabaseManager, IHostEnvironment env)
+        public CANDatabaseController(ICANDatabaseManager CANDatabaseManager, IHostEnvironment env, IHubContext<SignalHub> signalHub, IEventMessageService eventMessageService)
         {
             _CANDatabaseManager = CANDatabaseManager;
+            _signalHub = signalHub;
+            _eventMessageService = eventMessageService;
             _fileLocation = Path.Combine(env.ContentRootPath, "FileUploads", "dbcFile.dbc");
         }
 
@@ -31,7 +38,7 @@ namespace CANAdmin.Api.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> Add()
+        public async Task Add()
         {
             try
             {
@@ -49,29 +56,34 @@ namespace CANAdmin.Api.Controllers
 
                     FileModel savedFile = new FileModel(fileName, _fileLocation);
                     _CANDatabaseManager.Add(savedFile);
-                    return Ok();
+
+                    await _signalHub.Clients.All.SendAsync("RefreshCANDatabaseList");
+                    _eventMessageService.Success("File uploaded successfully.");
                 }
             }
             catch (Exception ex)
             {
-                return StatusCode(500);
+                _eventMessageService.Error("Something went wrong while uploading the file");
             }
-            return NoContent();
         }
 
         [HttpDelete("{id}")]
-        public IActionResult Delete(int id)
+        public async Task Delete(int id)
         {
             try
             {
-                if (id == 0) return BadRequest();
-
+                if (id == 0)
+                {
+                    _eventMessageService.Error("Invalid CAN Database.");
+                }
                 _CANDatabaseManager.Delete(id);
-                return Ok();
+
+                await _signalHub.Clients.All.SendAsync("RefreshCANDatabaseList");
+                _eventMessageService.Success("CAN Database has been successfully deleted.");
             }
             catch (Exception ex)
             {
-                return StatusCode(500);
+                _eventMessageService.Error("Something went wrong while trying to delete the CAN Database");
             }
         }
     }
