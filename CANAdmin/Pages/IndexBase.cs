@@ -1,5 +1,4 @@
-﻿using BlazorInputFile;
-using Microsoft.AspNetCore.Components;
+﻿using Microsoft.AspNetCore.Components;
 using CANAdmin.Components;
 using CANAdmin.Services;
 using CANAdmin.Shared.Models;
@@ -13,16 +12,24 @@ namespace CANAdmin.Pages
         private ICANDatabaseService CANDatabaseService { get; set; }
         public CANDatabaseList CANDatabaseListComponent;
         public WarningDialog WarningDialogComponent;
+        public StatusMessage statusMessage;
 
         public void DeleteWarning(CANDatabaseView canDatabase)
         {
             WarningDialogComponent.ShowDialog(canDatabase);
         }
 
+        public async Task SetStatusMessage(StatusMessage status)
+        {
+            statusMessage = status;
+            await statusMessage.Run();
+        }
+
         public async Task Delete(CANDatabaseView canDatabase)
         {
-            await CANDatabaseService.DeleteFile(canDatabase.Id);
+            var status = await CANDatabaseService.DeleteFile(canDatabase.Id);
             await RefreshCANDatabases();
+            SetStatusMessage(status);
         }
 
         public async Task RefreshCANDatabases()

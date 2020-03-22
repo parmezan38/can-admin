@@ -3,6 +3,8 @@ using Microsoft.AspNetCore.Components;
 using CANAdmin.Services;
 using System.Linq;
 using System.Threading.Tasks;
+using System;
+using CANAdmin.Shared.Models;
 
 namespace CANAdmin.Components
 {
@@ -12,9 +14,13 @@ namespace CANAdmin.Components
         private ICANDatabaseService CANDatabaseService { get; set; }
         [Parameter]
         public EventCallback<bool> RefreshEventCallback { get; set; }
+        [Parameter]
+        public EventCallback<StatusMessage> StatusMessageEventCallback { get; set; }
         public IFileListEntry DbcFile { get; set; }
         public string Label { get; set; }
         public bool DoubleBuffer = false;
+        public bool CanUpload = true;
+
 
         public void GetFile(IFileListEntry[] files)
         {
@@ -25,11 +31,19 @@ namespace CANAdmin.Components
         public async Task UploadFile()
         {
             if (DbcFile == null) return;
-            await CANDatabaseService.AddFile(DbcFile);
-            DbcFile = null;
-            Label = null;
-            DoubleBuffer = !DoubleBuffer; // Fixes an issue when last uploaded file won't upload again
-            await RefreshEventCallback.InvokeAsync(true);
+            if (CanUpload)
+            {
+                CanUpload = false;
+                var statusMessage = await CANDatabaseService.AddFile(DbcFile);
+                CanUpload = true;
+
+                DbcFile = null;
+                Label = null;
+                DoubleBuffer = !DoubleBuffer; // Fixes an issue when last uploaded file won't upload again
+
+                await RefreshEventCallback.InvokeAsync(true);
+                await StatusMessageEventCallback.InvokeAsync(statusMessage);
+            }
         }
     }
 }

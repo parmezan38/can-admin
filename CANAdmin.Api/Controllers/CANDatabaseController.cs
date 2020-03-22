@@ -5,6 +5,7 @@ using CANAdmin.Data;
 using CANAdmin.Shared.Tools;
 using System.IO;
 using System.Linq;
+using System;
 
 namespace CANAdmin.Api.Controllers
 {
@@ -27,27 +28,39 @@ namespace CANAdmin.Api.Controllers
         }
 
         [HttpPost]
-        public void Add()
+        public IActionResult Add()
         {
-            if (HttpContext.Request.Form.Files.Any())
+            try
             {
-                var file = HttpContext.Request.Form.Files[0];
-                FileModel savedFile = _FileSaver.SaveFile(file);
-                _CANDatabaseManager.Add(savedFile);
+                if (HttpContext.Request.Form.Files.Any())
+                {
+                    var file = HttpContext.Request.Form.Files[0];
+                    FileModel savedFile = _FileSaver.SaveFile(file);
+                    _CANDatabaseManager.Add(savedFile);
+                    return Ok();
+                }
             }
-            return;
+            catch (Exception ex)
+            {
+                return StatusCode(500);
+            }
+            return NoContent();
         }
 
         [HttpDelete("{id}")]
         public IActionResult Delete(int id)
         {
-            if (id == 0)
+            try
             {
-                return BadRequest();
-            }
+                if (id == 0) return BadRequest();
 
-            _CANDatabaseManager.Delete(id);
-            return NoContent();
+                _CANDatabaseManager.Delete(id);
+                return Ok();
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500);
+            }
         }
     }
 }

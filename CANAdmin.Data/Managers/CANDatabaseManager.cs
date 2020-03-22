@@ -19,16 +19,16 @@ namespace CANAdmin.Data
 
         public void Add(FileModel file)
         {
-            CANDatabase canDb = _dbcParser.ParseFile(file);
             try
             {
+                CANDatabase canDb = _dbcParser.ParseFile(file);
                 _db.CANDatabases.Add(canDb);
                 _db.SaveChanges();
                 return;
             }
             catch (Exception ex)
             {
-                Console.WriteLine("Error occurred.");
+                throw ex;
             }
         }
 

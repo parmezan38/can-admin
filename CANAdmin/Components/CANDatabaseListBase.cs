@@ -13,7 +13,7 @@ namespace CANAdmin.Components
         public IEnumerable<CANDatabaseView> CANDatabases { get; set; }
         [Parameter]
         public EventCallback<CANDatabaseView> DeleteWarningEventCallback { get; set; }
-        public bool ShowMessages = false;
+
         protected override async Task OnInitializedAsync()
         {
             await RefreshCANDatabases();

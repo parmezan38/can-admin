@@ -9,7 +9,7 @@ namespace CANAdmin.Services
     public interface ICANDatabaseService
     {
         public Task<IEnumerable<CANDatabaseView>> GetAll();
-        public Task AddFile(IFileListEntry file);
-        public Task DeleteFile(int id);
+        public Task<StatusMessage> AddFile(IFileListEntry file);
+        public Task<StatusMessage> DeleteFile(int id);
     }
 }
