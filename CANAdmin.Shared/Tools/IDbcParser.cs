@@ -4,6 +4,6 @@ namespace CANAdmin.Shared.Tools
 {
     public interface IDbcParser
     {
-        public CANDatabase ParseFile(FileModel file);
+        public CANDatabase ParseFile(FileModel file, ParsingArguments parsingArguments);
     }
 }

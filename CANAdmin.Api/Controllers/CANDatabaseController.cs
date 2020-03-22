@@ -2,10 +2,12 @@
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using CANAdmin.Data;
-using CANAdmin.Shared.Tools;
+using CANAdmin.Shared.Models;
 using System.IO;
 using System.Linq;
 using System;
+using Microsoft.Extensions.Hosting;
+using System.Threading.Tasks;
 
 namespace CANAdmin.Api.Controllers
 {
@@ -14,11 +16,12 @@ namespace CANAdmin.Api.Controllers
     public class CANDatabaseController : Controller
     {
         private readonly ICANDatabaseManager _CANDatabaseManager;
-        private readonly IFileSaver _FileSaver;
-        public CANDatabaseController(ICANDatabaseManager CANDatabaseManager, IFileSaver FileSaver)
+        private string _fileLocation;
+
+        public CANDatabaseController(ICANDatabaseManager CANDatabaseManager, IHostEnvironment env)
         {
             _CANDatabaseManager = CANDatabaseManager;
-            _FileSaver = FileSaver;
+            _fileLocation = Path.Combine(env.ContentRootPath, "FileUploads", "dbcFile.dbc");
         }
 
         [HttpGet]
@@ -28,14 +31,23 @@ namespace CANAdmin.Api.Controllers
         }
 
         [HttpPost]
-        public IActionResult Add()
+        public async Task<IActionResult> Add()
         {
             try
             {
                 if (HttpContext.Request.Form.Files.Any())
                 {
-                    var file = HttpContext.Request.Form.Files[0];
-                    FileModel savedFile = _FileSaver.SaveFile(file);
+                    string fileName = "";
+                    foreach (var file in HttpContext.Request.Form.Files)
+                    {
+                        using (var stream = new FileStream(_fileLocation, FileMode.Create))
+                        {
+                            await file.CopyToAsync(stream);
+                        }
+                        fileName = file.FileName;
+                    }
+
+                    FileModel savedFile = new FileModel(fileName, _fileLocation);
                     _CANDatabaseManager.Add(savedFile);
                     return Ok();
                 }

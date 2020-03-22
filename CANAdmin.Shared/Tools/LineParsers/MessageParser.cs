@@ -5,7 +5,7 @@ namespace CANAdmin.Shared.Tools.LineParsers
 {
     public class MessageParser
     {
-        public static Message ParseLine(string line, string[] arguments)
+        public static Message ParseLine(string line, List<string> arguments)
         {
             Message message = new Message()
             {

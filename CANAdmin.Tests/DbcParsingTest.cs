@@ -1,16 +1,7 @@
-using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.TestHost;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.DependencyInjection;
-using CANAdmin.Data;
-using CANAdmin.Services;
 using CANAdmin.Shared.Models;
 using CANAdmin.Shared.Tools;
 using CANAdmin.Shared.Tools.LineParsers;
-using System;
 using System.Collections.Generic;
-using System.IO;
-using System.Linq;
 using Xunit;
 
 namespace CANAdmin.Tests
@@ -22,13 +13,16 @@ namespace CANAdmin.Tests
         {
             var dbcParser = new DbcParser();
 
-            FileModel file = new FileModel
+            string location = "../../../DbcExamples/All_msg_types.dbc";
+            FileModel file = new FileModel("All_msg_types.dbc", location);
+
+            ParsingArguments parsingArguments = new ParsingArguments()
             {
-                Name = "All_msg_types.dbc",
-                Location = "../../../DbcExamples/All_msg_types.dbc"
+                Messages = { "MessageId", "Name" },
+                Signals = { "Name", "StartBit", "Length" }
             };
 
-            var result = dbcParser.ParseFile(file);
+            var result = dbcParser.ParseFile(file, parsingArguments);
 
             int networkNodescount = result.NetworkNodes.Count;
             Assert.True(networkNodescount == 20);
@@ -62,7 +56,8 @@ namespace CANAdmin.Tests
         {
             string line = " SG_ cell_voltage_002 m0 : 16|8@1+ (0.01,2) [2|4.55] \"V\"  VCU";
 
-            string[] arguments = new string[] { "Name", "StartBit", "Length" };
+            List<string> arguments = new List<string> { "Name", "StartBit", "Length" };
+
             Signal signal = SignalParser.ParseLine(line, arguments);
 
             Assert.True(signal.Name == "cell_voltage_002" && signal.StartBit == 16 && signal.Length == 8);
@@ -72,7 +67,8 @@ namespace CANAdmin.Tests
         public void MessageParseShouldReturnCorrectValues()
         {
             string line = "BO_ 304 Multiplexed_intel_2: 8 PDU";
-            string[] arguments = new string[] { "MessageId", "Name" };
+
+            List<string> arguments = new List<string> { "MessageId", "Name" };
 
             Message message = MessageParser.ParseLine(line, arguments);
 

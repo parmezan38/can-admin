@@ -1,10 +1,11 @@
 ﻿using CANAdmin.Shared.Models;
+using System.Collections.Generic;
 
 namespace CANAdmin.Shared.Tools.LineParsers
 {
     public class SignalParser
     {
-        public static Signal ParseLine(string line, string[] arguments)
+        public static Signal ParseLine(string line, List<string> arguments)
         {
             Signal signal = new Signal();
 

@@ -29,7 +29,6 @@ namespace CANAdmin.Api
         {
             services.AddScoped<ICANDatabaseManager, CANDatabaseManager>();
             services.AddScoped<IDbcParser, DbcParser>();
-            services.AddScoped<IFileSaver, FileSaver>();
             services.AddDbContextPool<ApplicationDbContext>(options =>
             {
                 options.UseSqlServer(Configuration.GetConnectionString("CANAdminDb"), b => b.MigrationsAssembly("CANAdmin.Data"));

@@ -19,9 +19,15 @@ namespace CANAdmin.Data
 
         public void Add(FileModel file)
         {
+            ParsingArguments parsingArguments = new ParsingArguments()
+            {
+                Messages = { "MessageId", "Name" },
+                Signals = { "Name", "StartBit", "Length" }
+            };
+
             try
             {
-                CANDatabase canDb = _dbcParser.ParseFile(file);
+                CANDatabase canDb = _dbcParser.ParseFile(file, parsingArguments);
                 _db.CANDatabases.Add(canDb);
                 _db.SaveChanges();
                 return;

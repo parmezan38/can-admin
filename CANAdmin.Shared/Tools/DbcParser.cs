@@ -7,7 +7,7 @@ namespace CANAdmin.Shared.Tools
 {
     public class DbcParser : IDbcParser
     {
-        public CANDatabase ParseFile(FileModel file)
+        public CANDatabase ParseFile(FileModel file, ParsingArguments arguments)
         {
             string line;
             CANDatabase dbcObject = new CANDatabase();
@@ -25,15 +25,13 @@ namespace CANAdmin.Shared.Tools
                 }
                 else if (LinePrefix.CheckLine(line, "BO_"))
                 {
-                    string[] arguments = new string[] { "MessageId", "Name" };
-                    Message message = MessageParser.ParseLine(line, arguments);
+                    Message message = MessageParser.ParseLine(line, arguments.Messages);
 
                     dbcObject.Messages.Add(message);
                 }
                 else if (LinePrefix.CheckLine(line, " SG_"))
                 {
-                    string[] arguments = new string[] { "Name", "StartBit", "Length" };
-                    Signal signal = SignalParser.ParseLine(line, arguments);
+                    Signal signal = SignalParser.ParseLine(line, arguments.Signals);
 
                     int indexOfLast = dbcObject.Messages.Count - 1;
                     dbcObject.Messages[indexOfLast].Signals.Add(signal);
